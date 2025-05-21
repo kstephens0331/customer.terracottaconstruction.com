@@ -3,7 +3,7 @@ import { supabase } from "../supabase";
 import { auth } from "../firebase";
 import Sidebar from "../components/Sidebar";
 import jsPDF from "jspdf";
-import logoImage from "../assets/logo.png";
+import logoImage from "../assets/logo.jpg";
 
 function Quotes() {
   const [quotes, setQuotes] = useState([]);
