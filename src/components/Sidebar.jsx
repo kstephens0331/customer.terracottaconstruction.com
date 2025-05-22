@@ -22,7 +22,7 @@ export default function Sidebar() {
     <div className="w-64 min-w-[250px] bg-[#c1440e] text-white min-h-screen flex flex-col justify-between">
       <div>
         <div className="p-6 font-bold text-2xl border-b border-orange-300">
-          Terracotta
+          Terracotta Construction
         </div>
 
         {user && (

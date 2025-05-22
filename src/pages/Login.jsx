@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabase";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -21,15 +22,36 @@ function Login() {
   };
 
   const handleGoogleLogin = async () => {
-    setError("");
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      navigate("/");
-    } catch (err) {
-      setError("Google sign-in failed.");
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Check if customer already exists
+    const { data, error } = await supabase
+      .from("customers")
+      .select("id")
+      .eq("email", user.email)
+      .single();
+
+    if (!data) {
+      // Add to Supabase if not found
+      await supabase.from("customers").insert([
+        {
+          email: user.email,
+          name: user.displayName || "Google User",
+          phone: "",         // Optional: can add later via Settings
+          address: "",       // Optional
+        },
+      ]);
     }
-  };
+
+    navigate("/");
+  } catch (err) {
+    console.error("Google login error:", err);
+    setError("Google sign-in failed.");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
